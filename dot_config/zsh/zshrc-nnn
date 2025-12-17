@@ -1,0 +1,65 @@
+
+# для nnn
+if [ -f /usr/share/nnn/quitcd/quitcd.bash_zsh ]; then
+    source /usr/share/nnn/quitcd/quitcd.bash_zsh
+fi
+export NNN_COLORS="#02030405"
+export NNN_FCOLORS='c1e20b02006005f7c6d6abc4'
+export NNN_OPTS="QruUoxESH"
+# Use "rifle" (ranger's file opener) program to open files
+#export NNN_OPENER=rifle
+export NNN_FIFO='/tmp/nnn.fifo'
+
+# plugins key map
+NNN_PLUG_1='/:finder;c:fzcd;C:fzcd_with_ignored;z:fzz;j:symlinkcd;.:gitroot;>:quick_cd'
+NNN_PLUG_2='o:open;O:open_with;v:preview-tui;t:treeview;l:bat'
+NNN_PLUG_3='!:openshell;d:!cp -r "$nnn" "$nnn".cp;'
+export NNN_PLUG="$NNN_PLUG_1;$NNN_PLUG_2;$NNN_PLUG_3"
+export NNN_ARCHIVE="\\.(7z|a|ace|alz|arc|arj|bz|bz2|cab|cpio|deb|gz|jar|lha|lz|lzh|lzma|lzo|rar|rpm|rz|t7z|tar|tbz|tbz2|tgz|tlz|txz|tZ|tzo|war|xpi|xz|Z|zip)$"
+export NSEL=${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.selection
+
+export BOOKMARKS_DIR="$HOME/.config/nnn/bookmarks"
+[ -n "$NNNLVL" ] && PS1="N$NNNLVL $PS1"
+alias nn="n ."
+alias nsel="cat $NSEL | tr '\0' '\n'"
+alias npick="n -p -"
+function n () {
+  # Block nesting of nnn in subshells
+  if [ -n "$NNNLVL" ] && [ "${NNNLVL:-0}" -ge 1 ]; then
+    echo "nnn is already running"
+    return
+  fi
+NNN_TMPFILE="${XDG_CONFIG_HOME:-$HOME/.config}/nnn/.lastd"
+nnn "$@"
+    if [ -f "$NNN_TMPFILE" ]; then
+      . "$NNN_TMPFILE"
+      rm -f "$NNN_TMPFILE" > /dev/null
+    fi
+}
+
+# Alternative to https://github.com/ohmyzsh/ohmyzsh/tree/master/plugins/wd
+# Borrowed from https://github.com/jarun/nnn/blob/master/plugins/bookmarks
+# Bookmarks are just symlinks in a $BOOKMARKS_DIR directory
+# Use fzf to select the bookmark and then cd into it
+function bookmarks() {
+  get_selected_bookmark() {
+      for entry in "$1"/*; do
+
+          # Skip unless directory symlink
+          [ -h "$entry" ] || continue
+          [ -d "$entry" ] || continue
+
+          printf "%20s -> %s\n" "$(basename "$entry")" "$(readlink -f "$entry")"
+      done | fzf --preview-window='hidden' --delimiter='->' --nth=1 |
+      awk 'END {
+          if (length($1) == 0) { print "'"$PWD"'" }
+          else { print "'"$BOOKMARKS_DIR"'/"$1 }
+      }'
+  }
+
+  bookmark=$(get_selected_bookmark "$BOOKMARKS_DIR")
+  cd $(readlink -f "$bookmark")
+}
+
+# One-character alias for bookmarks. In spirit of "rupa/z".
+alias b="bookmarks"
