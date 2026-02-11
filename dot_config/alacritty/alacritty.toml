@@ -1,0 +1,107 @@
+# Alacritty — конфигурация под Neovim + Tmux + SSH (с поддержкой буфера через OSC 52)
+# Совместимо с Linux, macOS, WSL
+
+[env]
+TERM = "xterm-256color"
+
+[terminal]
+# Ключевая настройка для работы буфера через SSH
+# osc52 = "Disabled" | "OnlyCopy" | "OnlyPaste" | "CopyPaste"
+# Controls the ability to write to the system clipboard with the OSC 52 escape sequence. While this escape sequence is useful to copy contents from the remote server, allowing any application to read from the clipboard can be easily abused while not providing significant benefits over explicitly pasting text.
+# Default: "OnlyCopy
+osc52 = "CopyPaste"  # разрешить приложениям (Tmux) писать в локальный буфер
+
+
+[keyboard]
+bindings = [
+  # Быстрое копирование/вставка (альтернатива мыши)
+  { key = "C", mods = "Control|Shift", action = "Copy" },
+  { key = "V", mods = "Control|Shift", action = "Paste" },
+
+  # Создание новых окон/вкладок — обычно делается через внешний терминал или Tmux
+]
+
+[mouse]
+hide_when_typing = false
+
+[selection]
+save_to_clipboard = true  # копировать выделенное в системный буфер (если возможно)
+semantic_escape_chars = ",│`|:\"' ()[]{}<>\t"
+
+
+[[hints.enabled]]
+regex = "[^ ]+\\.rs:\\d+:\\d+"
+command = { program = "code", args = [ "--goto" ] }
+mouse = { enabled = true }
+
+[cursor]
+style = "Beam"  # или "Block", "Underline"
+unfocused_hollow = true
+thickness = 0.15
+
+[bell]
+animation = "Linear"
+duration = 0
+#color = "#ffffff"
+#command = "None"
+
+[window]
+dimensions.columns = 120
+dimensions.lines = 35
+startup_mode = "Windowed"
+decorations = "full"  # "none" для безрамочного режима (по желанию)
+dynamic_title = true
+opacity = 1.0  # 0.9 для полупрозрачности
+
+[scrolling]
+history = 10000
+multiplier = 3
+
+[font]
+normal.family = "JetBrains Mono"
+normal.style = "Regular"
+bold.family = "JetBrains Mono"
+bold.style = "Bold"
+italic.family = "JetBrains Mono"
+italic.style = "Italic"
+bold_italic.family = "JetBrains Mono"
+bold_italic.style = "Bold Italic"
+size = 12.0
+
+[colors.primary]
+background = "#1e1e1e"  # почти чёрный фон (как в VS Code Dark+)
+foreground = "#d4d4d4"  # светло-серый текст
+dim_foreground = "#a0a0a0"
+bright_foreground = "#ffffff"
+
+[colors.cursor]
+text = "#1e1e1e"
+cursor = "#00ff00"  # яркий зелёный курсор
+
+[colors.vi_mode_cursor]
+text = "#1e1e1e"
+cursor = "#ffaa00"
+
+[colors.selection]
+text = "#ffffff"
+background = "#264f78"
+
+[colors.normal]
+black = "#000000"
+red = "#cd3131"
+green = "#0dbc79"
+yellow = "#e5c07b"
+blue = "#2472c8"
+magenta = "#bc3fbc"
+cyan = "#11a8cd"
+white = "#e5e5e5"
+
+[colors.bright]
+black = "#666666"
+red = "#f14c4c"
+green = "#23d18b"
+yellow = "#f2ce7b"
+blue = "#3b8eea"
+magenta = "#d670d6"
+cyan = "#29b8db"
+white = "#e5e5e5"
