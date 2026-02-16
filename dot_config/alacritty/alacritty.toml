@@ -22,7 +22,7 @@ bindings = [
 ]
 
 [mouse]
-hide_when_typing = false
+#hide_when_typing = false
 
 [selection]
 save_to_clipboard = true  # копировать выделенное в системный буфер (если возможно)
@@ -40,7 +40,7 @@ unfocused_hollow = true
 thickness = 0.15
 
 [bell]
-animation = "Linear"
+#animation = "Linear"
 duration = 0
 #color = "#ffffff"
 #command = "None"
@@ -58,15 +58,24 @@ history = 10000
 multiplier = 3
 
 [font]
-normal.family = "JetBrains Mono"
+normal.family = "Fira Code"
+#normal.family = "JetBrains Mono"
 normal.style = "Regular"
-bold.family = "JetBrains Mono"
+
+bold.family = "Fira Code"
+#bold.family = "JetBrains Mono"
 bold.style = "Bold"
-italic.family = "JetBrains Mono"
+
+#italic.family = "JetBrains Mono"
+italic.family = "Fira Code"
 italic.style = "Italic"
-bold_italic.family = "JetBrains Mono"
+
+#bold_italic.family = "JetBrains Mono"
+bold_italic.family = "Fira Code"
 bold_italic.style = "Bold Italic"
-size = 12.0
+
+size = 14.0
+
 
 [colors.primary]
 background = "#1e1e1e"  # почти чёрный фон (как в VS Code Dark+)
