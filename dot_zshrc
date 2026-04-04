@@ -1,4 +1,136 @@
 
+# Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
+# Initialization code that may require console input (password prompts, [y/n]
+# confirmations, etc.) must go above this block; everything else may go below.
+if [[ -r "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh" ]]; then
+  source "${XDG_CACHE_HOME:-$HOME/.cache}/p10k-instant-prompt-${(%):-%n}.zsh"
+fi
+# To customize prompt, run `p10k configure` or edit ~/.p10k.zsh.
+[[ ! -f ~/.p10k.zsh ]] || source ~/.p10k.zsh
 
-source ~/.config/zsh/zshrc
+# DISABLE_MAGIC_FUNCTIONS="true"
+# DISABLE_LS_COLORS="true"
+# DISABLE_AUTO_TITLE="true"
+# DISABLE_UNTRACKED_FILES_DIRTY="true"
+# HIST_STAMPS="mm/dd/yyyy"
+ENABLE_CORRECTION="true"
+COMPLETION_WAITING_DOTS="true"
+#  History
+# хранить историю в указанном файле
+export HISTFILE=~/.zsh_history
+# максимальное число команд, хранимых в сеансе
+export HISTSIZE=1000
+export SAVEHIST=$HISTSIZE
+# включить истоирю команд
+setopt APPEND_HISTORY
+# убрать повторяющиеся команды, пустые строки и пр.
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_REDUCE_BLANKS
+
+# don't nice background tasks
+setopt NO_BG_NICE
+setopt NO_HUP
+setopt NO_BEEP
+# allow functions to have local options
+setopt LOCAL_OPTIONS
+# allow functions to have local traps
+setopt LOCAL_TRAPS
+# share history between sessions ???
+setopt SHARE_HISTORY
+# add timestamps to history
+setopt EXTENDED_HISTORY
+setopt PROMPT_SUBST
+setopt CORRECT
+setopt COMPLETE_IN_WORD
+# adds history
+setopt APPEND_HISTORY
+# adds history incrementally and share it across sessions
+setopt INC_APPEND_HISTORY
+setopt SHARE_HISTORY
+# don't record dupes in history
+setopt HIST_IGNORE_ALL_DUPS
+setopt HIST_REDUCE_BLANKS
+setopt HIST_IGNORE_DUPS
+setopt HIST_IGNORE_SPACE
+setopt HIST_VERIFY
+setopt HIST_EXPIRE_DUPS_FIRST
+# dont ask for confirmation in rm globs*
+setopt RM_STAR_SILENT
+
+setopt AUTOCD
+setopt globdots
+
+# Default editor
+export EDITOR='vim'
+export VEDITOR='code'
+
+# Preferred editor for local and remote sessions
+if [[ -n $SSH_CONNECTION ]]; then
+   export EDITOR='vim'
+else
+   export EDITOR='nvim'
+fi
+
+# PATH
+typeset -U path
+path=( "$HOME/.local/bin" "$HOME/bin" "$HOME/.cargo/bin" "/opt" $path )
+
+if [[ "$OSTYPE" =~ "darwin" ]]; then
+    # when put in zshenv it gets overwritten by tmux which calls /etc/profile again (login shell)
+    export PATH=$HOME/Library/Python/3.10/bin:/opt/homebrew/opt/gnu-tar/libexec/gnubin:/opt/homebrew/Cellar/coreutils/9.1/libexec/gnubin:/opt/homebrew/bin:/opt/homebrew/opt/mysql-client/bin:/opt/homebrew/opt/gnu-sed/libexec/gnubin:$PATH
+    eval "$(/opt/homebrew/bin/brew shellenv)"
+    # brew автообновление конфигурация
+    export HOMEBREW_NO_ENV_HINTS=1
+    export HOMEBREW_AUTO_UPDATE_SECS=604800 
+fi
+
+if [[ "$OSTYPE" == *"linux"* ]] && [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ]; then
+  eval "$(/home/linuxbrew/.linuxbrew/bin/brew shellenv zsh)"
+  export HOMEBREW_NO_ENV_HINTS=1
+  export HOMEBREW_AUTO_UPDATE_SECS=604800
+fi
+
+source ~/.config/zsh/alias.zsh
+
+#
+# Created by Zap installer
+#
+[ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
+plug "zsh-users/zsh-autosuggestions"
+plug "zap-zsh/supercharge"
+#plug "zap-zsh/zap-prompt" #theme defualt
+plug "zsh-users/zsh-syntax-highlighting"
+plug "romkatv/powerlevel10k"
+
+# Load and initialise completion system
+autoload -Uz compinit
+compinit
+
+if type brew &>/dev/null; then
+  FPATH=$(brew --prefix)/share/zsh-completions:$FPATH
+  autoload -Uz compinit
+  compinit
+fi
+
+[ -f ~/.fzf.zsh ] && source ~/.fzf.zsh
+eval "$(zoxide init zsh)"
+
+# export lang=en_us.utf-8
+
+# edit command line in $editor
+bindkey '^e' edit-command-line
+
+# delete word with ctrl+backspace
+bindkey '^[[3;5~' backward-delete-word
+# delete char with backspaces and delete
+bindkey '^[[3~' delete-char
+bindkey '^?' backward-delete-char
+
+
+
+
+
+
+
 
