@@ -46,12 +46,13 @@ duration = 0
 #command = "None"
 
 [window]
-dimensions.columns = 120
-dimensions.lines = 35
+dimensions.columns = 150
+dimensions.lines = 40
 startup_mode = "Windowed"
 decorations = "full"  # "none" для безрамочного режима (по желанию)
 dynamic_title = true
 opacity = 1.0  # 0.9 для полупрозрачности
+option_as_alt = "Both"
 
 [scrolling]
 history = 10000
@@ -74,7 +75,7 @@ italic.style = "Italic"
 bold_italic.family = "Fira Code"
 bold_italic.style = "Bold Italic"
 
-size = 14.0
+size = 17.0
 
 
 [colors.primary]
