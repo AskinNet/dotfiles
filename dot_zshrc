@@ -1,4 +1,6 @@
 
+bindkey -e
+
 # Enable Powerlevel10k instant prompt. Should stay close to the top of ~/.zshrc.
 # Initialization code that may require console input (password prompts, [y/n]
 # confirmations, etc.) must go above this block; everything else may go below.
@@ -101,7 +103,7 @@ export VI_MODE_ESC_INSERT="jk" && plug "zap-zsh/vim"
 
 plug "zsh-users/zsh-autosuggestions"
 plug "zap-zsh/supercharge"
-#plug "zap-zsh/zap-prompt" #theme defualt
+plug "zap-zsh/zap-prompt" #theme defualt
 plug "zsh-users/zsh-syntax-highlighting"
 plug "romkatv/powerlevel10k"
 
@@ -120,7 +122,11 @@ eval "$(zoxide init zsh)"
 
 # export lang=en_us.utf-8
 
+bindkey '^K' kill-line
+
 # edit command line in $editor
+autoload -Uz edit-command-line
+zle -N edit-command-line
 bindkey '^e' edit-command-line
 
 # delete word with ctrl+backspace
@@ -128,6 +134,8 @@ bindkey '^[[3;5~' backward-delete-word
 # delete char with backspaces and delete
 bindkey '^[[3~' delete-char
 bindkey '^?' backward-delete-char
+
+
 
 
 
