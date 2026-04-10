@@ -2,5 +2,4 @@
 [".local/share/zap"]
     type = "git-repo"
     url = "https://github.com/zap-zsh/zap.git"
-    ref = "release-v1"
-    refreshPeriod = "24h"
+    refreshPeriod = "168h"

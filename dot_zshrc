@@ -131,16 +131,12 @@ bindkey '^e' edit-command-line
 
 # delete word with ctrl+backspace
 bindkey '^[[3;5~' backward-delete-word
-# delete char with backspaces and delete
-bindkey '^[[3~' delete-char
-bindkey '^?' backward-delete-char
 
-
-
-
-
-
-
+# Добавьте в ~/.zshrc
+# Alt+V = переключиться в vi-режим
+bindkey '^[v' 'bindkey -v'
+# Alt+E = переключиться в emacs-режим
+bindkey '^[e' 'bindkey -e'
 
 
 
