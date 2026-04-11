@@ -139,7 +139,7 @@ bindkey '^[v' 'bindkey -v'
 bindkey '^[e' 'bindkey -e'
 
 # Автоматически запускать tmux, если он не запущен
-if [[ -n "$SSH_CONNECTION" ]] && [[ -z "$TMUX" ]]; then
+if [[ -n "$SSH_CONNECTION" ]]; then
     # Пытаемся подключиться к сессии 'main', если нет — создаем новую
     tmux attach-session -t main || tmux new-session -s main
     # Важно: exit здесь не нужен, так как tmux заменяет собой процесс оболочки,
