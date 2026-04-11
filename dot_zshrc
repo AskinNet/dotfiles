@@ -142,7 +142,7 @@ bindkey '^[e' 'bindkey -e'
 
 # Автоматически не запускать tmux
 # при SSH-подключении
-if [[ -z "$SSH_CONNECTION" ]]; then
+if [[ -n "$SSH_CONNECTION" ]]; then
     tmux
     # Имя сессии
     # SESSION_NAME="main"
