@@ -139,4 +139,8 @@ bindkey '^[v' 'bindkey -v'
 bindkey '^[e' 'bindkey -e'
 
 
+# Автоматически запускать tmux, если он не запущен
+if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
+    tmux attach-session -t default 2>/dev/null || tmux new-session -s default
+fi
 
