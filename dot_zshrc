@@ -139,9 +139,18 @@ bindkey '^[v' 'bindkey -v'
 bindkey '^[e' 'bindkey -e'
 
 # Автоматически не запускать tmux
+# при SSH-подключении
 if [[ -z "$SSH_CONNECTION" ]]; then
-    # Пытаемся подключиться к сессии 'main', если нет — создаем новую
-    tmux attach-session -t main || tmux new-session -s main
-    # Важно: exit здесь не нужен, так как tmux заменяет собой процесс оболочки,
-    # но если tmux завершится, вы останетесь в обычном shell.
+    tmux
+    # Имя сессии
+    # SESSION_NAME="main"
+
+    # Проверяем, существует ли сессия
+    # if tmux has-session -t $SESSION_NAME 2>/dev/null; then
+        # Если сессия есть, подключаемся к ней
+        # tmux attach-session -t $SESSION_NAME
+    # else
+    #     # Если сессии нет, создаем новую
+    #     tmux new-session -s $SESSION_NAME
+    # fi
 fi
