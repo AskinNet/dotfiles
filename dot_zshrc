@@ -138,9 +138,10 @@ bindkey '^[v' 'bindkey -v'
 # Alt+E = переключиться в emacs-режим
 bindkey '^[e' 'bindkey -e'
 
-
 # Автоматически запускать tmux, если он не запущен
-if command -v tmux &> /dev/null && [ -z "$TMUX" ]; then
-    tmux attach-session -t default 2>/dev/null || tmux new-session -s default
+if [[ -n "$SSH_CONNECTION" ]] && [[ -z "$TMUX" ]]; then
+    # Пытаемся подключиться к сессии 'main', если нет — создаем новую
+    tmux attach-session -t main || tmux new-session -s main
+    # Важно: exit здесь не нужен, так как tmux заменяет собой процесс оболочки,
+    # но если tmux завершится, вы останетесь в обычном shell.
 fi
-
