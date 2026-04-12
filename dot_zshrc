@@ -101,13 +101,15 @@ source ~/.config/zsh/alias.zsh
 # Created by Zap installer
 #
 [ -f "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh" ] && source "${XDG_DATA_HOME:-$HOME/.local/share}/zap/zap.zsh"
-export VI_MODE_ESC_INSERT="jk" && plug "zap-zsh/vim"
+#
+#export VI_MODE_ESC_INSERT="jk" && plug "zap-zsh/vim"
 
 plug "zsh-users/zsh-autosuggestions"
-plug "zap-zsh/supercharge"
-plug "zap-zsh/zap-prompt" #theme defualt
+#plug "zap-zsh/supercharge"
+#plug "zap-zsh/zap-prompt" #theme defualt
 plug "zsh-users/zsh-syntax-highlighting"
 plug "romkatv/powerlevel10k"
+plug "zimfw/input"
 
 # Load and initialise completion system
 autoload -Uz compinit
@@ -127,8 +129,8 @@ eval "$(zoxide init zsh)"
 bindkey '^K' kill-line
 
 # edit command line in $editor
-autoload -Uz edit-command-line
-zle -N edit-command-line
+#autoload -Uz edit-command-line
+#zle -N edit-command-line
 bindkey '^e' edit-command-line
 
 # delete word with ctrl+backspace
@@ -136,23 +138,31 @@ bindkey '^[[3;5~' backward-delete-word
 
 # Добавьте в ~/.zshrc
 # Alt+V = переключиться в vi-режим
-bindkey '^[v' 'bindkey -v'
+#bindkey '^[v' 'bindkey -v'
 # Alt+E = переключиться в emacs-режим
-bindkey '^[e' 'bindkey -e'
+#bindkey '^[e' 'bindkey -e'
 
 # Автоматически не запускать tmux
 # при SSH-подключении
 if [[ -z "$SSH_CONNECTION" ]] && [[ -z $TMUX ]] ; then
     tmux
-    # Имя сессии
-    # SESSION_NAME="main"
-
-    # Проверяем, существует ли сессия
-    # if tmux has-session -t $SESSION_NAME 2>/dev/null; then
-        # Если сессия есть, подключаемся к ней
-        # tmux attach-session -t $SESSION_NAME
-    # else
-    #     # Если сессии нет, создаем новую
-    #     tmux new-session -s $SESSION_NAME
-    # fi
 fi
+
+# Bitwarden / rbw SSH agent configuration (only for work-laptop)
+if [[ "$HOST" == "pcu000" ]]; then
+    # Запускаем rbw unlock в фоне, если агент ещё не запущен
+    # (pinentry попросит пароль при первом обращении)
+    if ! pgrep -u "$USER" -x "rbw" > /dev/null; then
+        (rbw unlock > /dev/null 2>&1 &)
+    fi
+    # Указываем, что SSH должен использовать сокет rbw
+    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/rbw/ssh-agent-socket"
+fi
+
+# Bitwarden / rbw SSH agent (only if rbw is installed and configured)
+#if command -v rbw > /dev/null 2>&1 && [[ -d "$XDG_RUNTIME_DIR/rbw" ]]; then
+#    if ! pgrep -u "$USER" -x "rbw" > /dev/null; then
+#        (rbw unlock > /dev/null 2>&1 &)
+#    fi
+#    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/rbw/ssh-agent-socket"
+#fi
