@@ -27,23 +27,46 @@ if ! command -v zoxide > /dev/null 2>&1; then
   curl -sSfL https://raw.githubusercontent.com/ajeetdsouza/zoxide/main/install.sh | sh
 fi
 
-# rustup/cargo нужен для yazi и rbw — в apt Debian/Ubuntu их нет
-if ! command -v cargo > /dev/null 2>&1; then
-  curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs | sh -s -- -y
+# Дальше — готовые статические бинарники с GitHub Releases вместо сборки
+# через cargo (rustup+компиляция rustc/cargo — гигабайты и легко валится
+# по памяти на слабых машинах/контейнерах). Кладём в ~/.local/bin — он уже
+# в PATH (см. dot_zshrc), sudo не нужен.
+bin_dir="$HOME/.local/bin"
+mkdir -p "$bin_dir"
+
+case "{{ .chezmoi.arch }}" in
+  amd64) gnu_arch=x86_64 ;;
+  arm64) gnu_arch=aarch64 ;;
+  *)     gnu_arch="{{ .chezmoi.arch }}" ;;
+esac
+
+if ! command -v yazi > /dev/null 2>&1; then
+  tmp_yazi=$(mktemp -d)
+  curl -fsSLo "$tmp_yazi/yazi.zip" "https://github.com/sxyazi/yazi/releases/latest/download/yazi-${gnu_arch}-unknown-linux-musl.zip"
+  unzip -qo "$tmp_yazi/yazi.zip" -d "$tmp_yazi"
+  install "$tmp_yazi/yazi-${gnu_arch}-unknown-linux-musl/yazi" "$bin_dir/yazi"
+  install "$tmp_yazi/yazi-${gnu_arch}-unknown-linux-musl/ya" "$bin_dir/ya"
+  rm -rf "$tmp_yazi"
 fi
-export PATH="$HOME/.cargo/bin:$PATH"
-cargo install --locked yazi-fm yazi-cli rbw
+
+# rbw публикует статические бинарники на GitHub Releases только под amd64
+if ! command -v rbw > /dev/null 2>&1 && [ "{{ .chezmoi.arch }}" = "amd64" ]; then
+  rbw_version=$(curl -fsSL "https://api.github.com/repos/doy/rbw/releases/latest" | grep -Po '"tag_name":\s*"\K[^"]*')
+  tmp_rbw=$(mktemp -d)
+  curl -fsSLo "$tmp_rbw/rbw.tar.gz" "https://github.com/doy/rbw/releases/download/${rbw_version}/rbw_${rbw_version}_linux_amd64.tar.gz"
+  tar xf "$tmp_rbw/rbw.tar.gz" -C "$tmp_rbw" rbw rbw-agent
+  install "$tmp_rbw/rbw" "$bin_dir/rbw"
+  install "$tmp_rbw/rbw-agent" "$bin_dir/rbw-agent"
+  rm -rf "$tmp_rbw"
+fi
 
 if ! command -v lazygit > /dev/null 2>&1; then
-  case "{{ .chezmoi.arch }}" in
-    amd64) lazygit_arch=x86_64 ;;
-    *)     lazygit_arch="{{ .chezmoi.arch }}" ;;
-  esac
   lazygit_version=$(curl -fsSL "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name":\s*"v\K[^"]*')
-  curl -fsSLo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${lazygit_version}/lazygit_${lazygit_version}_Linux_${lazygit_arch}.tar.gz"
-  tar xf /tmp/lazygit.tar.gz -C /tmp lazygit
-  $sudo install /tmp/lazygit /usr/local/bin
-  rm -f /tmp/lazygit.tar.gz /tmp/lazygit
+  tmp_lazygit=$(mktemp -d)
+  curl -fsSLo "$tmp_lazygit/lazygit.tar.gz" "https://github.com/jesseduffield/lazygit/releases/download/v${lazygit_version}/lazygit_${lazygit_version}_Linux_${gnu_arch}.tar.gz"
+  tar xf "$tmp_lazygit/lazygit.tar.gz" -C "$tmp_lazygit" lazygit
+  install "$tmp_lazygit/lazygit" "$bin_dir/lazygit"
+  rm -rf "$tmp_lazygit"
 fi
 
 {{- end }}
