@@ -11,10 +11,16 @@ brew install git tmux neovim fzf ripgrep zoxide lazygit yazi rbw
 {{- else }}
 
 # Debian/Ubuntu (голый Linux и WSL — apt в обоих случаях)
-sudo apt-get update
-sudo apt-get install -y git tmux neovim fzf ripgrep curl unzip build-essential pkg-config libssl-dev fonts-firacode
+if [ "$(id -u)" = "0" ]; then
+  sudo=""
+else
+  sudo="sudo"
+fi
+
+$sudo apt-get update
+$sudo apt-get install -y git tmux neovim fzf ripgrep curl unzip build-essential pkg-config libssl-dev fonts-firacode
 {{- if .is_wsl }}
-sudo apt-get install -y wslu
+$sudo apt-get install -y wslu
 {{- end }}
 
 if ! command -v zoxide > /dev/null 2>&1; then
@@ -36,7 +42,7 @@ if ! command -v lazygit > /dev/null 2>&1; then
   lazygit_version=$(curl -fsSL "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name":\s*"v\K[^"]*')
   curl -fsSLo /tmp/lazygit.tar.gz "https://github.com/jesseduffield/lazygit/releases/download/v${lazygit_version}/lazygit_${lazygit_version}_Linux_${lazygit_arch}.tar.gz"
   tar xf /tmp/lazygit.tar.gz -C /tmp lazygit
-  sudo install /tmp/lazygit /usr/local/bin
+  $sudo install /tmp/lazygit /usr/local/bin
   rm -f /tmp/lazygit.tar.gz /tmp/lazygit
 fi
 
