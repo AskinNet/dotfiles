@@ -95,6 +95,14 @@ if [[ "$OSTYPE" == *"linux"* ]] && [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ];
   export HOMEBREW_AUTO_UPDATE_SECS=604800
 fi
 
+{{- if .is_wsl }}
+# WSL: открытие ссылок/файлов через Windows (пакет wslu)
+if command -v wslview > /dev/null 2>&1; then
+    alias open='wslview'
+    export BROWSER='wslview'
+fi
+{{- end }}
+
 source ~/.config/zsh/alias.zsh
 
 #
@@ -142,14 +150,9 @@ bindkey '^[[3;5~' backward-delete-word
 # Alt+E = переключиться в emacs-режим
 #bindkey '^[e' 'bindkey -e'
 
-# Автоматически не запускать tmux
-# при SSH-подключении
-if [[ -z "$SSH_CONNECTION" ]] && [[ -z $TMUX ]] ; then
-    tmux
-fi
-
-# Bitwarden / rbw SSH agent configuration (only for work-laptop)
-if [[ "$HOST" == "pcu000" ]]; then
+{{- if eq .role "work" }}
+# Bitwarden CLI (rbw) SSH agent — только на рабочей машине (role=work)
+if command -v rbw > /dev/null 2>&1; then
     # Запускаем rbw unlock в фоне, если агент ещё не запущен
     # (pinentry попросит пароль при первом обращении)
     if ! pgrep -u "$USER" -x "rbw" > /dev/null; then
@@ -158,11 +161,4 @@ if [[ "$HOST" == "pcu000" ]]; then
     # Указываем, что SSH должен использовать сокет rbw
     export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/rbw/ssh-agent-socket"
 fi
-
-# Bitwarden / rbw SSH agent (only if rbw is installed and configured)
-#if command -v rbw > /dev/null 2>&1 && [[ -d "$XDG_RUNTIME_DIR/rbw" ]]; then
-#    if ! pgrep -u "$USER" -x "rbw" > /dev/null; then
-#        (rbw unlock > /dev/null 2>&1 &)
-#    fi
-#    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/rbw/ssh-agent-socket"
-#fi
+{{- end }}

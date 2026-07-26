@@ -1,8 +1,4 @@
-encryption = "age"
-
-[age]
-  recipient = "age1wl87u2dmyvnzg30crjxu4c5jya8tgg7mlz5sahnep7fykksmha9sml2l0h"  # ← ваш ПУБЛИЧНЫЙ ключ
-
-[bitwarden]
-  command = "bw"
-  unlock = "auto"  # Авто-разблокировка bw/rbw если сессия не активна
+{{- $isWSL := and (eq .chezmoi.os "linux") (.chezmoi.kernel.osrelease | lower | contains "microsoft") -}}
+[data]
+  is_wsl = {{ $isWSL }}
+  role   = {{ promptStringOnce . "role" "Роль машины (personal/work)" "personal" | quote }}
