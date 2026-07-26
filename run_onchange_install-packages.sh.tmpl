@@ -6,7 +6,10 @@ set -euo pipefail
 if ! command -v brew > /dev/null 2>&1; then
   NONINTERACTIVE=1 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 fi
-brew install git tmux neovim fzf ripgrep zoxide lazygit yazi rbw
+brew install git tmux neovim fzf ripgrep zoxide lazygit yazi
+{{- if .install_bitwarden }}
+brew install rbw
+{{- end }}
 
 {{- else }}
 
@@ -49,6 +52,7 @@ if ! command -v yazi > /dev/null 2>&1; then
   rm -rf "$tmp_yazi"
 fi
 
+{{- if .install_bitwarden }}
 # rbw публикует статические бинарники на GitHub Releases только под amd64
 if ! command -v rbw > /dev/null 2>&1 && [ "{{ .chezmoi.arch }}" = "amd64" ]; then
   rbw_version=$(curl -fsSL "https://api.github.com/repos/doy/rbw/releases/latest" | grep -Po '"tag_name":\s*"\K[^"]*')
@@ -59,6 +63,7 @@ if ! command -v rbw > /dev/null 2>&1 && [ "{{ .chezmoi.arch }}" = "amd64" ]; the
   install "$tmp_rbw/rbw-agent" "$bin_dir/rbw-agent"
   rm -rf "$tmp_rbw"
 fi
+{{- end }}
 
 if ! command -v lazygit > /dev/null 2>&1; then
   lazygit_version=$(curl -fsSL "https://api.github.com/repos/jesseduffield/lazygit/releases/latest" | grep -Po '"tag_name":\s*"v\K[^"]*')

@@ -150,8 +150,8 @@ bindkey '^[[3;5~' backward-delete-word
 # Alt+E = переключиться в emacs-режим
 #bindkey '^[e' 'bindkey -e'
 
-{{- if eq .role "work" }}
-# Bitwarden CLI (rbw) SSH agent — только на рабочей машине (role=work)
+{{- if .install_bitwarden }}
+# Bitwarden CLI (rbw) SSH agent
 if command -v rbw > /dev/null 2>&1; then
     # Запускаем rbw unlock в фоне, если агент ещё не запущен
     # (pinentry попросит пароль при первом обращении)
