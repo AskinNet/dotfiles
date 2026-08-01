@@ -1,4 +1,4 @@
-alias zshconfig="nvim ~/.zshrc"
+alias zshconfig="nvim ~/.config/zsh/zshrc"
 alias zshcommit="source ~/.zshrc"
 alias vimconfig="nvim ~/.config/vim/vimrc"
 alias aliasconfig="nvim ~/.config/zsh/alias.zsh"
@@ -8,3 +8,9 @@ alias aliasconfig="nvim ~/.config/zsh/alias.zsh"
 # alias v="nvim"
 # alias vim="nvim"
 alias y="yazi"
+alias ll='ls -alF'
+alias la='ls -A'
+alias l='ls -CF'
+alias claw="openclaw"
+alias clw="openclaw"
+alias her="herdr"
