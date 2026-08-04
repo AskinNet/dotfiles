@@ -8,6 +8,18 @@ opt.mouse = "a"
 -- opts.rocks.hererocks = false
 -- opts.rocks.enabled = false
 
+opt.clipboard = "unnamedplus"
+-- Автоматически отправляем любой yank через SSH (OSC 52) в Windows Terminal
+vim.api.nvim_create_autocmd('TextYankPost', {
+  callback = function()
+    -- Проверяем, что событие вызвано обычной операцией копирования (y)
+    if vim.v.event.operator == 'y' then
+      -- Используем встроенную функцию Neovim для отправки текста по SSH
+      require('vim.ui.clipboard.osc52').copy('+')(vim.v.event.regcontents)
+    end
+  end
+})
+
 -- Store undos between sessions
 opt.undofile = true
 opt.smarttab = true
