@@ -14,7 +14,7 @@ fi
 
 # DISABLE_MAGIC_FUNCTIONS="true"
 # DISABLE_LS_COLORS="true"
-# DISABLE_AUTO_TITLE="true"
+ DISABLE_AUTO_TITLE="true"
 # DISABLE_UNTRACKED_FILES_DIRTY="true"
 # HIST_STAMPS="mm/dd/yyyy"
 ENABLE_CORRECTION="true"
@@ -95,14 +95,6 @@ if [[ "$OSTYPE" == *"linux"* ]] && [ -f "/home/linuxbrew/.linuxbrew/bin/brew" ];
   export HOMEBREW_AUTO_UPDATE_SECS=604800
 fi
 
-{{- if .is_wsl }}
-# WSL: открытие ссылок/файлов через Windows (пакет wslu)
-if command -v wslview > /dev/null 2>&1; then
-    alias open='wslview'
-    export BROWSER='wslview'
-fi
-{{- end }}
-
 source ~/.config/zsh/alias.zsh
 
 #
@@ -149,16 +141,3 @@ bindkey '^[[3;5~' backward-delete-word
 #bindkey '^[v' 'bindkey -v'
 # Alt+E = переключиться в emacs-режим
 #bindkey '^[e' 'bindkey -e'
-
-{{- if .install_bitwarden }}
-# Bitwarden CLI (rbw) SSH agent
-if command -v rbw > /dev/null 2>&1; then
-    # Запускаем rbw unlock в фоне, если агент ещё не запущен
-    # (pinentry попросит пароль при первом обращении)
-    if ! pgrep -u "$USER" -x "rbw" > /dev/null; then
-        (rbw unlock > /dev/null 2>&1 &)
-    fi
-    # Указываем, что SSH должен использовать сокет rbw
-    export SSH_AUTH_SOCK="$XDG_RUNTIME_DIR/rbw/ssh-agent-socket"
-fi
-{{- end }}
